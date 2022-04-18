@@ -2,15 +2,15 @@
 
 namespace Game
 {
-    internal class King : Piece
+    internal class Pawn : Piece
     {
-        public King(Color color, Board.Board board) : base(color, board)
+        public Pawn(Color color, Board.Board board) : base(color, board)
         {
         }
 
         public override string ToString()
         {
-            return "K";
+            return "P";
         }
     }
 }

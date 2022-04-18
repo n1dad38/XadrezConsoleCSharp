@@ -14,5 +14,10 @@
             QtMovements = 0;
             Board = board;
         }
+
+        public void incMovementQt()
+        {
+            QtMovements++;
+        }
     }
 }
