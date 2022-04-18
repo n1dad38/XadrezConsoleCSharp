@@ -9,5 +9,11 @@
         {
 
         }
+
+        public Position(int line, int column)
+        {
+            Line = line;
+            Column = column;
+        }
     }
 }
