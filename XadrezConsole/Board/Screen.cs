@@ -1,4 +1,6 @@
-﻿namespace Board
+﻿using Game;
+
+namespace Board
 {
     internal class Screen
     {
@@ -37,6 +39,14 @@
                 Console.Write(piece);
                 Console.ForegroundColor = aux;
             }
+        }
+
+        public static ChessPositioning readChessPositioning()
+        {
+            string s = Console.ReadLine();
+            char col = s[0];
+            int row = int.Parse(s[1].ToString());
+            return new ChessPositioning(col, row);
         }
     }
 }
