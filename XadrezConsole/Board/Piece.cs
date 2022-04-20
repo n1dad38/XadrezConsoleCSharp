@@ -1,6 +1,6 @@
 ﻿namespace Board
 {
-    internal class Piece
+    abstract class Piece
     {
         public Position Position { get; set; } = new Position();
         public Color Color { get; protected set; }
@@ -19,5 +19,7 @@
         {
             QtMovements++;
         }
+
+        public abstract bool[,] PossibleMoves();
     }
 }

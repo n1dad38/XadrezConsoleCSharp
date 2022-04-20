@@ -14,11 +14,17 @@ namespace XadrezConsole
                 while (!chessMatch.finished)
                 {
                     Console.Clear();
-                    Console.WriteLine();
                     Screen.Print(chessMatch.board);
                     Console.WriteLine();
                     Console.Write("From: ");
                     Position from = Screen.readChessPositioning().toPosition();
+
+                    bool[,] possiblePositions = chessMatch.board.Piece(from).PossibleMoves();
+
+                    Console.Clear();
+                    Screen.Print(chessMatch.board, possiblePositions);
+
+                    Console.WriteLine();
                     Console.Write("To: ");
                     Position to = Screen.readChessPositioning().toPosition();
 
