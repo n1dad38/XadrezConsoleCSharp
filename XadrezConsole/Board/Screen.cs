@@ -46,10 +46,11 @@ namespace Board
                     }
                     PrintPiece(board.Piece(i, j));
                 }
+                Console.BackgroundColor = originalBackground;
                 Console.WriteLine();
             }
-            Console.WriteLine("  a b c d e f g h");
             Console.BackgroundColor = originalBackground;
+            Console.WriteLine("  a b c d e f g h");
         }
 
         public static void PrintPiece(Piece piece)

@@ -21,6 +21,8 @@ namespace XadrezConsole
 
                     bool[,] possiblePositions = chessMatch.board.Piece(from).PossibleMoves();
 
+                    
+
                     Console.Clear();
                     Screen.Print(chessMatch.board, possiblePositions);
 
@@ -31,7 +33,7 @@ namespace XadrezConsole
                     chessMatch.move(from, to);
                 }
             }
-            catch (BoardException e) 
+            catch (BoardException e)
             {
                 Console.WriteLine(e.Message);
             }

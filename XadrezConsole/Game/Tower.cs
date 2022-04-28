@@ -30,12 +30,12 @@ namespace Game
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
-                pos.DefineValues(pos.Line - 1, pos.Column);
                 if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
                 {
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
+                pos.DefineValues(pos.Line - 1, pos.Column);
             }
             pos.DefineValues(Position.Line, Position.Column);
 
@@ -45,12 +45,12 @@ namespace Game
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
-                pos.DefineValues(pos.Line + 1, pos.Column);
                 if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
                 {
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
+                pos.DefineValues(pos.Line + 1, pos.Column);
             }
             pos.DefineValues(Position.Line, Position.Column);
 
@@ -60,12 +60,12 @@ namespace Game
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
-                pos.DefineValues(pos.Line, pos.Column + 1);
                 if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
                 {
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
+                pos.DefineValues(pos.Line, pos.Column + 1);
             }
             pos.DefineValues(Position.Line, Position.Column);
 
@@ -75,12 +75,12 @@ namespace Game
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
-                pos.DefineValues(pos.Line, pos.Column - 1);
                 if (Board.Piece(pos) != null && Board.Piece(pos).Color != Color)
                 {
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
+                pos.DefineValues(pos.Line, pos.Column - 1);
             }
             pos.DefineValues(Position.Line, Position.Column);
 
