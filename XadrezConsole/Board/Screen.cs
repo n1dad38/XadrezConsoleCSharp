@@ -12,6 +12,10 @@ namespace Board
             Console.WriteLine();
             Console.WriteLine("Round: " + match.round);
             Console.WriteLine("Waiting move from: " + match.curPlayer);
+            if (match.check)
+            {
+                Console.WriteLine("Check!");
+            }
         }
 
         public static void printCapturedPieces(ChessMatch match)

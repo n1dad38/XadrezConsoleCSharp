@@ -10,6 +10,7 @@ namespace Game
         public bool finished { get; set; }
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
+        public bool check { get; private set; }
 
         public ChessMatch()
         {
@@ -17,12 +18,13 @@ namespace Game
             round = 1;
             curPlayer = Color.White;
             finished = false;
+            check = false;
             pieces = new HashSet<Piece>();
             captured = new HashSet<Piece>();
             PlacePieces();
         }
 
-        public void move(Position from, Position to)
+        public Piece move(Position from, Position to)
         {
             Piece p = board.RemovePiece(from);
             p.incMovementQt();
@@ -32,25 +34,42 @@ namespace Game
             {
                 captured.Add(capturedPiece);
             }
+            return capturedPiece;
         }
 
         public void makeMove(Position from, Position to)
         {
-            move(from, to);
+            Piece capturedPiece = move(from, to);
+
+            if (isInCheck(curPlayer))
+            {
+                undoMovement(from, to, capturedPiece);
+                throw new BoardException("You cannot place yourself in check.");
+            }
+
+            if (isInCheck(enemyColor(curPlayer)))
+            {
+                check = true;
+            }
+            else
+            {
+                check = false;
+            }
+
             round++;
             changePlayer();
         }
 
-        private void changePlayer()
+        public void undoMovement(Position from, Position to, Piece capturedPiece)
         {
-            if (curPlayer == Color.White)
+            Piece piece = board.RemovePiece(to);
+            piece.decMovementQt();
+            if (capturedPiece != null)
             {
-                curPlayer = Color.Black;
+                board.PlacePiece(capturedPiece, to);
+                captured.Remove(capturedPiece);
             }
-            else
-            {
-                curPlayer = Color.White;
-            }
+            board.PlacePiece(piece, from);
         }
 
         public void validateFromPosition(Position from)
@@ -110,6 +129,33 @@ namespace Game
             pieces.Add(piece);
         }
 
+        public bool isInCheck(Color color)
+        {
+            Piece k = king(color);
+            foreach (Piece piece in piecesInGame(enemyColor(color)))
+            {
+                bool[,] mat = piece.PossibleMoves();
+                if (mat[k.Position.Line, k.Position.Column])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void changePlayer()
+        {
+            if (curPlayer == Color.White)
+            {
+                curPlayer = Color.Black;
+            }
+            else
+            {
+                curPlayer = Color.White;
+            }
+        }
+
+
         private void PlacePieces()
         {
             //White
@@ -123,10 +169,37 @@ namespace Game
 
             //Black
             //Special
-            PlaceNewPiece('a', 8, new Tower(Color.Black, board));
+            PlaceNewPiece('d', 8, new Tower(Color.Black, board));
+            PlaceNewPiece('d', 7, new Tower(Color.Black, board));
+            PlaceNewPiece('e', 7, new Tower(Color.Black, board));
             PlaceNewPiece('e', 8, new King(Color.Black, board));
-            PlaceNewPiece('h', 8, new Tower(Color.Black, board));
+            PlaceNewPiece('f', 8, new Tower(Color.Black, board));
+            PlaceNewPiece('f', 7, new Tower(Color.Black, board));
 
+        }
+
+        private Color enemyColor(Color color)
+        {
+            if (color == Color.White)
+            {
+                return Color.Black;
+            }
+            else
+            {
+                return Color.White;
+            }
+        }
+
+        private Piece king(Color color)
+        {
+            foreach (Piece piece in piecesInGame(color))
+            {
+                if (piece is King)
+                {
+                    return piece;
+                }
+            }
+            return null;
         }
     }
 }

@@ -41,6 +41,11 @@
             QtMovements++;
         }
 
+        public void decMovementQt()
+        {
+            QtMovements--;
+        }
+
         public abstract bool[,] PossibleMoves();
     }
 }
