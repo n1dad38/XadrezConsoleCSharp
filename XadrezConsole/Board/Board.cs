@@ -39,6 +39,7 @@
             p.Position = pos;
         }
 
+
         public Piece RemovePiece(Position pos)
         {
             if (Piece(pos) == null)

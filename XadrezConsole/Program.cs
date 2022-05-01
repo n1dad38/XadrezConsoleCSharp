@@ -9,48 +9,42 @@ namespace XadrezConsole
         {
 
             ChessMatch chessMatch = new ChessMatch();
+            Position from = new Position(-1, -1);
 
             while (!chessMatch.finished)
             {
+                
                 try
                 {
                     Console.Clear();
 
-                    Screen.Print(chessMatch.board);
 
-                    Console.WriteLine();
-                    Console.WriteLine("Round: " + chessMatch.round);
+                    if (from.Line == -1 && from.Column == -1)
+                    {
+                        Screen.printMatch(chessMatch);
+                        Console.WriteLine();
 
-                    Console.WriteLine("Waiting move from: " + chessMatch.curPlayer);
-                    Console.WriteLine();
-
-                    Console.Write("From: ");
-                    Position from = Screen.readChessPositioning().toPosition();
-                    chessMatch.validateFromPosition(from);
+                        Console.Write("From: ");
+                        from = Screen.readChessPositioning().toPosition();
+                        chessMatch.validateFromPosition(from);
+                        Console.Clear();
+                    }
 
                     bool[,] possiblePositions = chessMatch.board.Piece(from).PossibleMoves();
-
-
-
-                    Console.Clear();
                     Screen.Print(chessMatch.board, possiblePositions);
 
                     Console.WriteLine();
-                    while (true)
-                    {
-                        Console.Write("To: ");
-                        Position to = Screen.readChessPositioning().toPosition();
 
-                        chessMatch.validateToPosition(from, to);
+                    Console.Write("To: ");
+                    Position to = Screen.readChessPositioning().toPosition();
 
-                        chessMatch.execPlay(from, to);
-                        if (chessMatch.board.Piece(from) == null)
-                        {
-                            break;
-                        }
-                    }
+                    chessMatch.validateToPosition(from, to);
+
+                    chessMatch.makeMove(from, to);
                 }
                 catch (BoardException e) { Console.WriteLine(e.Message); Console.ReadLine(); }
+                catch (IndexOutOfRangeException) { Console.WriteLine("This position does not exist."); Console.ReadLine(); }
+                finally { from.DefineValues(-1, -1); }
             }
 
         }
