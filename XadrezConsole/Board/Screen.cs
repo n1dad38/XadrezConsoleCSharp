@@ -11,10 +11,18 @@ namespace Board
             printCapturedPieces(match);
             Console.WriteLine();
             Console.WriteLine("Round: " + match.round);
-            Console.WriteLine("Waiting move from: " + match.curPlayer);
-            if (match.check)
+            if (!match.finished)
             {
-                Console.WriteLine("Check!");
+                Console.WriteLine("Waiting move from: " + match.curPlayer);
+                if (match.check)
+                {
+                    Console.WriteLine("Check!");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Checkmate!");
+                Console.WriteLine("Winner: " + match.curPlayer);
             }
         }
 

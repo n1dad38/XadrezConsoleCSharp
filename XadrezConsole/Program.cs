@@ -13,7 +13,7 @@ namespace XadrezConsole
 
             while (!chessMatch.finished)
             {
-                
+
                 try
                 {
                     Console.Clear();
@@ -46,7 +46,8 @@ namespace XadrezConsole
                 catch (IndexOutOfRangeException) { Console.WriteLine("This position does not exist."); Console.ReadLine(); }
                 finally { from.DefineValues(-1, -1); }
             }
-
+            Console.Clear();
+            Screen.printMatch(chessMatch);
         }
     }
 }

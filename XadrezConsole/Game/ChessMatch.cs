@@ -56,8 +56,15 @@ namespace Game
                 check = false;
             }
 
-            round++;
-            changePlayer();
+            if (testCheckMate(enemyColor(curPlayer)))
+            {
+                finished = true;
+            }
+            else
+            {
+                round++;
+                changePlayer();
+            }
         }
 
         public void undoMovement(Position from, Position to, Piece capturedPiece)
@@ -141,6 +148,34 @@ namespace Game
                 }
             }
             return false;
+        }
+
+        public bool testCheckMate(Color color)
+        {
+            if (!isInCheck(color)) { return false; }
+            foreach (Piece piece in piecesInGame(color))
+            {
+                bool [,] mat = piece.PossibleMoves();
+                for (int i = 0; i < board.Lines; i++)
+                {
+                    for (int j = 0; j < board.Columns; j++)
+                    {
+                        if (mat[i, j])
+                        {
+                            Position from = piece.Position;
+                            Position to = new Position(i, j);
+                            Piece capturedPiece = move(from, to);
+                            bool testCheck = isInCheck(color);
+                            undoMovement(from, to, capturedPiece);
+                            if (!testCheck)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         private void changePlayer()
