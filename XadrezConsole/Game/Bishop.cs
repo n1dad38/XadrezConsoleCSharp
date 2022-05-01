@@ -2,15 +2,15 @@
 
 namespace Game
 {
-    internal class Tower : Piece
+    internal class Bishop : Piece
     {
-        public Tower(Color color, Board.Board board) : base(color, board)
+        public Bishop(Color color, Board.Board board) : base(color, board)
         {
         }
 
         public override string ToString()
         {
-            return "T";
+            return "B";
         }
 
         private bool CanMove(Position pos)
@@ -25,8 +25,8 @@ namespace Game
 
             Position pos = new Position(Position.Line, Position.Column);
 
-            // n
-            pos.DefineValues(pos.Line - 1, pos.Column);
+            // nw
+            pos.DefineValues(pos.Line - 1, pos.Column - 1);
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
@@ -35,13 +35,13 @@ namespace Game
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
-                pos.DefineValues(pos.Line - 1, pos.Column);
+                pos.DefineValues(pos.Line - 1, pos.Column - 1);
             }
             pos.DefineValues(Position.Line, Position.Column);
 
 
-            // w
-            pos.DefineValues(pos.Line + 1, pos.Column);
+            // sw
+            pos.DefineValues(pos.Line + 1, pos.Column - 1);
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
@@ -50,13 +50,13 @@ namespace Game
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
-                pos.DefineValues(pos.Line + 1, pos.Column);
+                pos.DefineValues(pos.Line + 1, pos.Column - 1);
             }
             pos.DefineValues(Position.Line, Position.Column);
 
 
-            // e
-            pos.DefineValues(pos.Line, pos.Column + 1);
+            // se
+            pos.DefineValues(pos.Line + 1, pos.Column + 1);
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
@@ -65,13 +65,13 @@ namespace Game
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
-                pos.DefineValues(pos.Line, pos.Column + 1);
+                pos.DefineValues(pos.Line + 1, pos.Column + 1);
             }
             pos.DefineValues(Position.Line, Position.Column);
 
 
-            // w
-            pos.DefineValues(pos.Line, pos.Column - 1);
+            // ne
+            pos.DefineValues(pos.Line - 1, pos.Column + 1);
             while (Board.ValidPosition(pos) && CanMove(pos))
             {
                 mat[pos.Line, pos.Column] = true;
@@ -80,7 +80,7 @@ namespace Game
                     mat[pos.Line, pos.Column] = true;
                     break;
                 }
-                pos.DefineValues(pos.Line, pos.Column - 1);
+                pos.DefineValues(pos.Line - 1, pos.Column + 1);
             }
             pos.DefineValues(Position.Line, Position.Column);
 

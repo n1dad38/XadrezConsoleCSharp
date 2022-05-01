@@ -40,7 +40,7 @@ namespace XadrezConsole
 
                     chessMatch.validateToPosition(from, to);
 
-                    chessMatch.makeMove(from, to);
+                    chessMatch.handleMove(from, to);
                 }
                 catch (BoardException e) { Console.WriteLine(e.Message); Console.ReadLine(); }
                 catch (IndexOutOfRangeException) { Console.WriteLine("This position does not exist."); Console.ReadLine(); }
