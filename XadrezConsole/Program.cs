@@ -19,16 +19,13 @@ namespace XadrezConsole
                     Console.Clear();
 
 
-                    if (from.Line == -1 && from.Column == -1)
-                    {
-                        Screen.printMatch(chessMatch);
-                        Console.WriteLine();
+                    Screen.printMatch(chessMatch);
+                    Console.WriteLine();
 
-                        Console.Write("From: ");
-                        from = Screen.readChessPositioning().toPosition();
-                        chessMatch.validateFromPosition(from);
-                        Console.Clear();
-                    }
+                    Console.Write("From: ");
+                    from = Screen.readChessPositioning().toPosition();
+                    chessMatch.validateFromPosition(from);
+                    Console.Clear();
 
                     bool[,] possiblePositions = chessMatch.board.Piece(from).PossibleMoves();
                     Screen.Print(chessMatch.board, possiblePositions);
@@ -43,8 +40,6 @@ namespace XadrezConsole
                     chessMatch.handleMove(from, to);
                 }
                 catch (BoardException e) { Console.WriteLine(e.Message); Console.ReadLine(); }
-                catch (IndexOutOfRangeException) { Console.WriteLine("This position does not exist."); Console.ReadLine(); }
-                finally { from.DefineValues(-1, -1); }
             }
             Console.Clear();
             Screen.printMatch(chessMatch);

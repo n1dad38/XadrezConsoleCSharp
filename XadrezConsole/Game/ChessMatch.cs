@@ -34,6 +34,29 @@ namespace Game
             {
                 captured.Add(capturedPiece);
             }
+
+            // Special Move Castling
+            if (p is King)
+            {
+                // Special Move Castling Short
+                if (to.Column == from.Column + 2)
+                {
+                    Position fromRook = new Position(from.Line, from.Column + 3);
+                    Position toRook = new Position(to.Line, to.Column - 1);
+                    Piece rook = board.RemovePiece(fromRook);
+                    rook.incMovementQt();
+                    board.PlacePiece(rook, toRook);
+                }
+                // Special Move Castling Long
+                else if (to.Column == from.Column - 2)
+                {
+                    Position fromRook = new Position(from.Line, from.Column - 4);
+                    Position toRook = new Position(to.Line, to.Column + 1);
+                    Piece rook = board.RemovePiece(fromRook);
+                    rook.incMovementQt();
+                    board.PlacePiece(rook, toRook);
+                }
+            }
             return capturedPiece;
         }
 
@@ -76,7 +99,30 @@ namespace Game
                 board.PlacePiece(capturedPiece, to);
                 captured.Remove(capturedPiece);
             }
-            board.PlacePiece(piece, from);
+                board.PlacePiece(piece, from);
+
+            // Undo Special Move Castling
+            if (piece is King)
+            {
+                // Undo Special Move Castling Short
+                if (to.Column == from.Column + 2)
+                {
+                    Position fromRook = new Position(from.Line, from.Column + 3);
+                    Position toRook = new Position(to.Line, to.Column - 1);
+                    Piece rook = board.RemovePiece(toRook);
+                    rook.decMovementQt();
+                    board.PlacePiece(rook, fromRook);
+                }
+                // Undo Special Move Castling Long
+                else if (to.Column == from.Column - 2)
+                {
+                    Position fromRook = new Position(from.Line, from.Column - 4);
+                    Position toRook = new Position(to.Line, to.Column + 1);
+                    Piece rook = board.RemovePiece(toRook);
+                    rook.decMovementQt();
+                    board.PlacePiece(rook, fromRook);
+                }
+            }
         }
 
         public void validateFromPosition(Position from)
@@ -155,7 +201,7 @@ namespace Game
             if (!isInCheck(color)) { return false; }
             foreach (Piece piece in piecesInGame(color))
             {
-                bool [,] mat = piece.PossibleMoves();
+                bool[,] mat = piece.PossibleMoves();
                 for (int i = 0; i < board.Lines; i++)
                 {
                     for (int j = 0; j < board.Columns; j++)
@@ -198,7 +244,7 @@ namespace Game
             PlaceNewPiece('b', 1, new Knight(Color.White, board));
             PlaceNewPiece('c', 1, new Bishop(Color.White, board));
             PlaceNewPiece('d', 1, new Queen(Color.White, board));
-            PlaceNewPiece('e', 1, new King(Color.White, board));
+            PlaceNewPiece('e', 1, new King(Color.White, board, this));
             PlaceNewPiece('f', 1, new Bishop(Color.White, board));
             PlaceNewPiece('g', 1, new Knight(Color.White, board));
             PlaceNewPiece('h', 1, new Rook(Color.White, board));
@@ -213,7 +259,7 @@ namespace Game
             PlaceNewPiece('b', 8, new Knight(Color.Black, board));
             PlaceNewPiece('c', 8, new Bishop(Color.Black, board));
             PlaceNewPiece('d', 8, new Queen(Color.Black, board));
-            PlaceNewPiece('e', 8, new King(Color.Black, board));
+            PlaceNewPiece('e', 8, new King(Color.Black, board, this));
             PlaceNewPiece('f', 8, new Bishop(Color.Black, board));
             PlaceNewPiece('g', 8, new Knight(Color.Black, board));
             PlaceNewPiece('h', 8, new Rook(Color.Black, board));
