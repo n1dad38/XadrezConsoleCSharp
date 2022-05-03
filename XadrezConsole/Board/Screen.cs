@@ -108,7 +108,7 @@ namespace Board
             Console.WriteLine("  a b c d e f g h");
         }
 
-        public static void PrintPiece(Piece piece)
+        public static void PrintPiece(Piece? piece)
         {
             if (piece == null)
             {
@@ -133,10 +133,14 @@ namespace Board
 
         public static ChessPositioning readChessPositioning()
         {
-            string s = Console.ReadLine();
-            char col = s[0];
-            int row = int.Parse(s[1].ToString());
-            return new ChessPositioning(col, row);
+            string? s = Console.ReadLine();
+            if (!string.IsNullOrEmpty(s))
+            {
+                char col = s[0];
+                int row = int.Parse(s[1].ToString());
+                return new ChessPositioning(col, row);
+            }
+            return new ChessPositioning('a',0);
         }
     }
 }

@@ -26,8 +26,9 @@ namespace XadrezConsole
                     chessMatch.validateFromPosition(from);
                     Console.Clear();
 
-                    bool[,] possiblePositions = chessMatch.board.Piece(from).PossibleMoves();
-                    Screen.Print(chessMatch.board, possiblePositions);
+                    bool[,]? possiblePositions = chessMatch.board.Piece(from)?.PossibleMoves();
+                    if (possiblePositions != null)
+                        Screen.Print(chessMatch.board, possiblePositions);
 
                     Console.WriteLine();
 

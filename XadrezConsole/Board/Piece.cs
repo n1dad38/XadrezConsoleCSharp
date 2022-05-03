@@ -17,14 +17,17 @@
 
         public bool anyPossibleMove()
         {
-            bool[,] mat = PossibleMoves();
+            bool[,]? mat = PossibleMoves();
             for (int i = 0; i < Board.Lines; i++)
             {
                 for (int j = 0; j < Board.Columns; j++)
                 {
-                    if (mat[i,j])
+                    if (mat is not null)
                     {
-                        return true;
+                        if (mat[i, j])
+                        {
+                            return true;
+                        }
                     }
                 }
             }

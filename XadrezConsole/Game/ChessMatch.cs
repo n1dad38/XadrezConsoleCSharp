@@ -33,7 +33,7 @@ namespace Game
         public Piece? makeMove(Position from, Position to)
         {
             Piece? p = board.RemovePiece(from);
-            p.incMovementQt();
+            p?.incMovementQt();
             Piece? capturedPiece = board.RemovePiece(to);
             board.PlacePiece(p, to);
             if (capturedPiece != null)
@@ -48,7 +48,7 @@ namespace Game
                 {
                     Console.Write("Choose your promotion (R/H/B/Q): ");
 
-                    string promotedToInput = Console.ReadLine();
+                    string? promotedToInput = Console.ReadLine();
                     if (string.IsNullOrEmpty(promotedToInput))
                     {
                         undoMovement(from, to, capturedPiece);
@@ -69,7 +69,10 @@ namespace Game
                         throw new BoardException("Invalid promotion.");
                     }
                     p = board.RemovePiece(to);
-                    pieces.Remove(p);
+                    if (p != null)
+                    {
+                        pieces.Remove(p);
+                    }
                     if ((promotedTo is 'R' or 'r') && p != null)
                     {
                         promoted = new Rook(p.Color, board);
@@ -187,7 +190,7 @@ namespace Game
             }
         }
 
-        public void undoMovement(Position from, Position to, Piece capturedPiece)
+        public void undoMovement(Position from, Position to, Piece? capturedPiece)
         {
             Piece? piece = board.RemovePiece(to);
             if (piece != null)
@@ -250,21 +253,29 @@ namespace Game
             {
                 throw new BoardException("There is no piece at this position.");
             }
-            if (curPlayer != board.Piece(from).Color)
+            if (curPlayer != board.Piece(from)?.Color)
             {
                 throw new BoardException("You cannot move a piece from another player.");
             }
-            if (!board.Piece(from).anyPossibleMove())
+            Piece? pieceFrom = board.Piece(from);
+            if (pieceFrom != null)
             {
-                throw new BoardException("There is no move avaiable for this piece.");
+                if (!pieceFrom.anyPossibleMove())
+                {
+                    throw new BoardException("There is no move avaiable for this piece.");
+                }
             }
         }
 
         public void validateToPosition(Position from, Position to)
         {
-            if (!board.Piece(from).possibleMovement(to))
+            Piece? pieceFrom = board.Piece(from);
+            if (pieceFrom != null)
             {
-                throw new BoardException("Cannot make this move.");
+                if (!pieceFrom.possibleMovement(to))
+                {
+                    throw new BoardException("Cannot make this move.");
+                }
             }
         }
 
@@ -303,13 +314,16 @@ namespace Game
 
         public bool isInCheck(Color color)
         {
-            Piece k = king(color);
+            Piece? k = king(color);
             foreach (Piece piece in piecesInGame(enemyColor(color)))
             {
                 bool[,] mat = piece.PossibleMoves();
-                if (mat[k.Position.Line, k.Position.Column])
+                if (k?.Position != null)
                 {
-                    return true;
+                    if (mat[k.Position.Line, k.Position.Column])
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -329,12 +343,15 @@ namespace Game
                         {
                             Position? from = piece.Position;
                             Position to = new Position(i, j);
-                            Piece? capturedPiece = makeMove(from, to);
-                            bool testCheck = isInCheck(color);
-                            undoMovement(from, to, capturedPiece);
-                            if (!testCheck)
+                            if (from != null && to != null)
                             {
-                                return false;
+                                Piece? capturedPiece = makeMove(from, to);
+                                bool testCheck = isInCheck(color);
+                                undoMovement(from, to, capturedPiece);
+                                if (!testCheck)
+                                {
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -400,7 +417,7 @@ namespace Game
             }
         }
 
-        private Piece king(Color color)
+        private Piece? king(Color color)
         {
             foreach (Piece piece in piecesInGame(color))
             {

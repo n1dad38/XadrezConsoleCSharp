@@ -29,13 +29,14 @@
             return Piece(pos) != null;
         }
 
-        public void PlacePiece(Piece p, Position pos)
+        public void PlacePiece(Piece? p, Position pos)
         {
             if (ContainPiece(pos))
             {
                 throw new BoardException("Contains a piece in this position.");
             }
             Pieces[pos.Line, pos.Column] = p;
+            if (p is not null)
             p.Position = pos;
         }
 
@@ -47,7 +48,8 @@
                 return null;
             }
             Piece? aux = Piece(pos);
-            aux.Position = null;
+            if (aux != null)
+                aux.Position = null;
             Pieces[pos.Line, pos.Column] = null;
             return aux;
         }
