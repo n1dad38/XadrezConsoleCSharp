@@ -13,7 +13,6 @@ namespace XadrezConsole
 
             while (!chessMatch.finished)
             {
-
                 try
                 {
                     Console.Clear();
@@ -40,6 +39,7 @@ namespace XadrezConsole
                     chessMatch.handleMove(from, to);
                 }
                 catch (BoardException e) { Console.WriteLine(e.Message); Console.ReadLine(); }
+                catch (Exception) { Console.WriteLine("Invalid input."); Console.ReadLine(); }
             }
             Console.Clear();
             Screen.printMatch(chessMatch);

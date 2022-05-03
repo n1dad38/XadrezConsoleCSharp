@@ -1,4 +1,5 @@
 ﻿using Board;
+using System.IO;
 
 namespace Game
 {
@@ -12,6 +13,8 @@ namespace Game
         private HashSet<Piece> captured;
         public bool check { get; private set; }
         public Piece? weakEnPassant { get; private set; }
+        private char promotedTo;
+        private Piece? promoted;
 
         public ChessMatch()
         {
@@ -21,6 +24,7 @@ namespace Game
             finished = false;
             check = false;
             weakEnPassant = null;
+            promoted = null;
             pieces = new HashSet<Piece>();
             captured = new HashSet<Piece>();
             PlacePieces();
@@ -36,6 +40,62 @@ namespace Game
             {
                 captured.Add(capturedPiece);
             }
+
+            // Special Move Pawn Promotion
+            if (p is Pawn)
+            {
+                if ((p.Color == Color.White && to.Line == 0) || (p.Color == Color.Black && to.Line == 7))
+                {
+                    Console.Write("Choose your promotion (R/H/B/Q): ");
+
+                    string promotedToInput = Console.ReadLine();
+                    if (string.IsNullOrEmpty(promotedToInput))
+                    {
+                        undoMovement(from, to, capturedPiece);
+                        throw new BoardException("Invalid promotion.");
+                    }
+                    promotedTo = char.Parse(promotedToInput);
+                    if (
+                    promotedTo != 'R' &&
+                    promotedTo != 'H' &&
+                    promotedTo != 'B' &&
+                    promotedTo != 'Q' &&
+                    promotedTo != 'r' &&
+                    promotedTo != 'h' &&
+                    promotedTo != 'b' &&
+                    promotedTo != 'q')
+                    {
+                        undoMovement(from, to, capturedPiece);
+                        throw new BoardException("Invalid promotion.");
+                    }
+                    p = board.RemovePiece(to);
+                    pieces.Remove(p);
+                    if ((promotedTo is 'R' or 'r') && p != null)
+                    {
+                        promoted = new Rook(p.Color, board);
+                    }
+                    else if ((promotedTo is 'H' or 'h') && p != null)
+                    {
+                        promoted = new Knight(p.Color, board);
+                    }
+                    else if ((promotedTo is 'B' or 'b') && p != null)
+                    {
+                        promoted = new Bishop(p.Color, board);
+                    }
+                    else if ((promotedTo is 'Q' or 'q') && p != null)
+                    {
+                        promoted = new Queen(p.Color, board);
+                    }
+
+                    if (promoted != null)
+                    {
+                        board.PlacePiece(promoted, to);
+                        pieces.Add(promoted);
+                    }
+                }
+            }
+
+
 
             // Special Move Castling
             if (p is King)
@@ -95,6 +155,8 @@ namespace Game
                 throw new BoardException("You cannot place yourself in check.");
             }
 
+            Piece? piece = board.Piece(to);
+
             if (isInCheck(enemyColor(curPlayer)))
             {
                 check = true;
@@ -113,8 +175,6 @@ namespace Game
                 round++;
                 changePlayer();
             }
-
-            Piece? piece = board.Piece(to);
 
             // Special Move En Passant
             if (piece is Pawn && (to.Line == from.Line - 2) || (to.Line == from.Line + 2))
@@ -139,7 +199,7 @@ namespace Game
                 board.PlacePiece(capturedPiece, to);
                 captured.Remove(capturedPiece);
             }
-                board.PlacePiece(piece, from);
+            board.PlacePiece(piece, from);
 
             // Undo Special Move Castling
             if (piece is King)
