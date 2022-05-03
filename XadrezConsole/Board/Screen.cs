@@ -13,7 +13,17 @@ namespace Board
             Console.WriteLine("Round: " + match.round);
             if (!match.finished)
             {
-                Console.WriteLine("Waiting move from: " + match.curPlayer);
+                Console.Write("Waiting move from: ");
+                if (match.curPlayer == Color.Black)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(match.curPlayer);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.WriteLine(match.curPlayer);
+                }
                 if (match.check)
                 {
                     Console.WriteLine("Check!");

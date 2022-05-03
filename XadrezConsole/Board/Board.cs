@@ -4,7 +4,7 @@
     {
         public int Lines { get; set; }
         public int Columns { get; set; }
-        private Piece[,] Pieces;
+        private Piece?[,] Pieces;
 
         public Board(int lines, int columns)
         {
@@ -13,12 +13,12 @@
             Pieces = new Piece[lines, columns];
         }
 
-        public Piece Piece(int line, int column)
+        public Piece? Piece(int line, int column)
         {
             return Pieces[line, column];
         }
 
-        public Piece Piece(Position pos)
+        public Piece? Piece(Position pos)
         {
             return Pieces[pos.Line, pos.Column];
         }
@@ -40,13 +40,13 @@
         }
 
 
-        public Piece RemovePiece(Position pos)
+        public Piece? RemovePiece(Position pos)
         {
             if (Piece(pos) == null)
             {
                 return null;
             }
-            Piece aux = Piece(pos);
+            Piece? aux = Piece(pos);
             aux.Position = null;
             Pieces[pos.Line, pos.Column] = null;
             return aux;
