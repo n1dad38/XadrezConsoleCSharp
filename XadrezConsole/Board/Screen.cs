@@ -136,7 +136,7 @@ namespace Board
             string? s = Console.ReadLine();
             if (!string.IsNullOrEmpty(s))
             {
-                char col = s[0];
+                char col = char.ToLower(s[0]);
                 int row = int.Parse(s[1].ToString());
                 return new ChessPositioning(col, row);
             }
