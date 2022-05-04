@@ -4,10 +4,10 @@ namespace Game
 {
     internal class Pawn : Piece
     {
-        private ChessMatch match;
+        public ChessMatch Match { get; private set; }
         public Pawn(Color color, Board.Board board, ChessMatch match) : base(color, board)
         {
-            this.match = match;
+            Match = match;
         }
 
         public override string ToString()
@@ -15,7 +15,7 @@ namespace Game
             return "P";
         }
 
-        private bool isEnemy(Position pos)
+        private bool IsEnemy(Position pos)
         {
             Piece? piece = Board.Piece(pos);
             return piece != null && piece.Color != Color;
@@ -31,7 +31,7 @@ namespace Game
         {
             bool[,] mat = new bool[Board.Lines, Board.Columns];
 
-            Position pos = new Position(0, 0);
+            Position pos = new(0, 0);
 
             if (Position != null)
             {
@@ -49,12 +49,12 @@ namespace Game
                         mat[pos.Line, pos.Column] = true;
                     }
                     pos.DefineValues(Position.Line - 1, Position.Column - 1);
-                    if (Board.ValidPosition(pos) && isEnemy(pos))
+                    if (Board.ValidPosition(pos) && IsEnemy(pos))
                     {
                         mat[pos.Line, pos.Column] = true;
                     }
                     pos.DefineValues(Position.Line - 1, Position.Column + 1);
-                    if (Board.ValidPosition(pos) && isEnemy(pos))
+                    if (Board.ValidPosition(pos) && IsEnemy(pos))
                     {
                         mat[pos.Line, pos.Column] = true;
                     }
@@ -62,13 +62,13 @@ namespace Game
                     // Special Move En Passant for White
                     if (Position.Line == 3)
                     {
-                        Position left = new Position(Position.Line, Position.Column - 1);
-                        Position right = new Position(Position.Line, Position.Column + 1);
-                        if (Board.ValidPosition(left) && isEnemy(left) && Board.Piece(left) == match.weakEnPassant)
+                        Position left = new(Position.Line, Position.Column - 1);
+                        Position right = new(Position.Line, Position.Column + 1);
+                        if (Board.ValidPosition(left) && IsEnemy(left) && Board.Piece(left) == Match.WeakEnPassant)
                         {
                             mat[left.Line - 1, left.Column] = true;
                         }
-                        if (Board.ValidPosition(right) && isEnemy(right) && Board.Piece(right) == match.weakEnPassant)
+                        if (Board.ValidPosition(right) && IsEnemy(right) && Board.Piece(right) == Match.WeakEnPassant)
                         {
                             mat[right.Line - 1, right.Column] = true;
                         }
@@ -87,25 +87,25 @@ namespace Game
                         mat[pos.Line, pos.Column] = true;
                     }
                     pos.DefineValues(Position.Line + 1, Position.Column - 1);
-                    if (Board.ValidPosition(pos) && isEnemy(pos))
+                    if (Board.ValidPosition(pos) && IsEnemy(pos))
                     {
                         mat[pos.Line, pos.Column] = true;
                     }
                     pos.DefineValues(Position.Line + 1, Position.Column + 1);
-                    if (Board.ValidPosition(pos) && isEnemy(pos))
+                    if (Board.ValidPosition(pos) && IsEnemy(pos))
                     {
                         mat[pos.Line, pos.Column] = true;
                     }
                     // Special Move En Passant for Black
                     if (Position.Line == 4)
                     {
-                        Position left = new Position(Position.Line, Position.Column - 1);
-                        Position right = new Position(Position.Line, Position.Column + 1);
-                        if (Board.ValidPosition(left) && isEnemy(left) && Board.Piece(left) == match.weakEnPassant)
+                        Position left = new(Position.Line, Position.Column - 1);
+                        Position right = new(Position.Line, Position.Column + 1);
+                        if (Board.ValidPosition(left) && IsEnemy(left) && Board.Piece(left) == Match.WeakEnPassant)
                         {
                             mat[left.Line + 1, left.Column] = true;
                         }
-                        if (Board.ValidPosition(right) && isEnemy(right) && Board.Piece(right) == match.weakEnPassant)
+                        if (Board.ValidPosition(right) && IsEnemy(right) && Board.Piece(right) == Match.WeakEnPassant)
                         {
                             mat[right.Line + 1, right.Column] = true;
                         }

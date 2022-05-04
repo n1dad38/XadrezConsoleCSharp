@@ -4,27 +4,27 @@ namespace Board
 {
     internal class Screen
     {
-        public static void printMatch(ChessMatch match)
+        public static void PrintMatch(ChessMatch match)
         {
-            Print(match.board);
+            Print(match.Board);
             Console.WriteLine();
-            printCapturedPieces(match);
+            PrintCapturedPieces(match);
             Console.WriteLine();
-            Console.WriteLine("Round: " + match.round);
-            if (!match.finished)
+            Console.WriteLine("Round: " + match.Round);
+            if (!match.Finished)
             {
                 Console.Write("Waiting move from: ");
-                if (match.curPlayer == Color.Black)
+                if (match.CurPlayer == Color.Black)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine(match.curPlayer);
+                    Console.WriteLine(match.CurPlayer);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 else
                 {
-                    Console.WriteLine(match.curPlayer);
+                    Console.WriteLine(match.CurPlayer);
                 }
-                if (match.check)
+                if (match.Check)
                 {
                     Console.WriteLine("Check!");
                 }
@@ -32,23 +32,23 @@ namespace Board
             else
             {
                 Console.WriteLine("Checkmate!");
-                Console.WriteLine("Winner: " + match.curPlayer);
+                Console.WriteLine("Winner: " + match.CurPlayer);
             }
         }
 
-        public static void printCapturedPieces(ChessMatch match)
+        public static void PrintCapturedPieces(ChessMatch match)
         {
             Console.WriteLine("Captured Pieces:");
             Console.WriteLine();
             Console.Write("White: ");
-            printSet(match.capturedPieces(Color.White));
+            PrintSet(match.CapturedPieces(Color.White));
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Black: ");
-            printSet(match.capturedPieces(Color.Black));
+            PrintSet(match.CapturedPieces(Color.Black));
             Console.ForegroundColor = ConsoleColor.White;
         }
 
-        public static void printSet(HashSet<Piece> set)
+        public static void PrintSet(HashSet<Piece> set)
         {
             Console.Write("[");
             foreach (Piece piece in set)
@@ -131,7 +131,7 @@ namespace Board
             }
         }
 
-        public static ChessPositioning readChessPositioning()
+        public static ChessPositioning ReadChessPositioning()
         {
             string? s = Console.ReadLine();
             if (!string.IsNullOrEmpty(s))

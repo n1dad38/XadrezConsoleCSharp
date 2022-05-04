@@ -5,45 +5,45 @@ namespace XadrezConsole
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
 
-            ChessMatch chessMatch = new ChessMatch();
-            Position from = new Position(-1, -1);
+            ChessMatch chessMatch = new();
+            Position from;
 
-            while (!chessMatch.finished)
+            while (!chessMatch.Finished)
             {
                 try
                 {
                     Console.Clear();
 
 
-                    Screen.printMatch(chessMatch);
+                    Screen.PrintMatch(chessMatch);
                     Console.WriteLine();
 
                     Console.Write("From: ");
-                    from = Screen.readChessPositioning().toPosition();
-                    chessMatch.validateFromPosition(from);
+                    from = Screen.ReadChessPositioning().ToPosition();
+                    chessMatch.ValidateFromPosition(from);
                     Console.Clear();
 
-                    bool[,]? possiblePositions = chessMatch.board.Piece(from)?.PossibleMoves();
+                    bool[,]? possiblePositions = chessMatch.Board.Piece(from)?.PossibleMoves();
                     if (possiblePositions != null)
-                        Screen.Print(chessMatch.board, possiblePositions);
+                        Screen.Print(chessMatch.Board, possiblePositions);
 
                     Console.WriteLine();
 
                     Console.Write("To: ");
-                    Position to = Screen.readChessPositioning().toPosition();
+                    Position to = Screen.ReadChessPositioning().ToPosition();
 
-                    chessMatch.validateToPosition(from, to);
+                    chessMatch.ValidateToPosition(from, to);
 
-                    chessMatch.handleMove(from, to);
+                    chessMatch.HandleMove(from, to);
                 }
                 catch (BoardException e) { Console.WriteLine(e.Message); Console.ReadLine(); }
                 catch (Exception) { Console.WriteLine("Invalid input."); Console.ReadLine(); }
             }
             Console.Clear();
-            Screen.printMatch(chessMatch);
+            Screen.PrintMatch(chessMatch);
         }
     }
 }

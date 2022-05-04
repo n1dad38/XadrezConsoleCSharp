@@ -15,7 +15,7 @@
             Board = board;
         }
 
-        public bool anyPossibleMove()
+        public bool AnyPossibleMove()
         {
             bool[,]? mat = PossibleMoves();
             for (int i = 0; i < Board.Lines; i++)
@@ -34,17 +34,17 @@
             return false;
         }
 
-        public bool possibleMovement(Position pos)
+        public bool PossibleMovement(Position pos)
         {
             return PossibleMoves()[pos.Line, pos.Column];
         }
 
-        public void incMovementQt()
+        public void IncMovementQt()
         {
             QtMovements++;
         }
 
-        public void decMovementQt()
+        public void DecMovementQt()
         {
             QtMovements--;
         }

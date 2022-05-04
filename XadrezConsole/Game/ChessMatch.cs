@@ -1,44 +1,43 @@
 ﻿using Board;
-using System.IO;
 
 namespace Game
 {
     internal class ChessMatch
     {
-        public Board.Board board { get; private set; }
-        public int round { get; private set; }
-        public Color curPlayer { get; private set; }
-        public bool finished { get; set; }
-        private HashSet<Piece> pieces;
-        private HashSet<Piece> captured;
-        public bool check { get; private set; }
-        public Piece? weakEnPassant { get; private set; }
+        public Board.Board Board { get; private set; }
+        public int Round { get; private set; }
+        public Color CurPlayer { get; private set; }
+        public bool Finished { get; set; }
+        public HashSet<Piece> Pieces { get; private set; }
+        public HashSet<Piece> Captured { get; private set; }
+        public bool Check { get; private set; }
+        public Piece? WeakEnPassant { get; private set; }
         private char promotedTo;
         private Piece? promoted;
 
         public ChessMatch()
         {
-            board = new Board.Board(8, 8);
-            round = 1;
-            curPlayer = Color.White;
-            finished = false;
-            check = false;
-            weakEnPassant = null;
+            Board = new Board.Board(8, 8);
+            Round = 1;
+            CurPlayer = Color.White;
+            Finished = false;
+            Check = false;
+            WeakEnPassant = null;
             promoted = null;
-            pieces = new HashSet<Piece>();
-            captured = new HashSet<Piece>();
+            Pieces = new HashSet<Piece>();
+            Captured = new HashSet<Piece>();
             PlacePieces();
         }
 
-        public Piece? makeMove(Position from, Position to)
+        public Piece? MakeMove(Position from, Position to)
         {
-            Piece? p = board.RemovePiece(from);
-            p?.incMovementQt();
-            Piece? capturedPiece = board.RemovePiece(to);
-            board.PlacePiece(p, to);
+            Piece? p = Board.RemovePiece(from);
+            p?.IncMovementQt();
+            Piece? capturedPiece = Board.RemovePiece(to);
+            Board.PlacePiece(p, to);
             if (capturedPiece != null)
             {
-                captured.Add(capturedPiece);
+                Captured.Add(capturedPiece);
             }
 
             // Special Move Pawn Promotion
@@ -51,7 +50,7 @@ namespace Game
                     string? promotedToInput = Console.ReadLine();
                     if (string.IsNullOrEmpty(promotedToInput))
                     {
-                        undoMovement(from, to, capturedPiece);
+                        UndoMovement(from, to, capturedPiece);
                         throw new BoardException("Invalid promotion.");
                     }
                     promotedTo = char.Parse(promotedToInput);
@@ -65,35 +64,35 @@ namespace Game
                     promotedTo != 'b' &&
                     promotedTo != 'q')
                     {
-                        undoMovement(from, to, capturedPiece);
+                        UndoMovement(from, to, capturedPiece);
                         throw new BoardException("Invalid promotion.");
                     }
-                    p = board.RemovePiece(to);
+                    p = Board.RemovePiece(to);
                     if (p != null)
                     {
-                        pieces.Remove(p);
+                        Pieces.Remove(p);
                     }
                     if ((promotedTo is 'R' or 'r') && p != null)
                     {
-                        promoted = new Rook(p.Color, board);
+                        promoted = new Rook(p.Color, Board);
                     }
                     else if ((promotedTo is 'H' or 'h') && p != null)
                     {
-                        promoted = new Knight(p.Color, board);
+                        promoted = new Knight(p.Color, Board);
                     }
                     else if ((promotedTo is 'B' or 'b') && p != null)
                     {
-                        promoted = new Bishop(p.Color, board);
+                        promoted = new Bishop(p.Color, Board);
                     }
                     else if ((promotedTo is 'Q' or 'q') && p != null)
                     {
-                        promoted = new Queen(p.Color, board);
+                        promoted = new Queen(p.Color, Board);
                     }
 
                     if (promoted != null)
                     {
-                        board.PlacePiece(promoted, to);
-                        pieces.Add(promoted);
+                        Board.PlacePiece(promoted, to);
+                        Pieces.Add(promoted);
                     }
                 }
             }
@@ -106,22 +105,22 @@ namespace Game
                 // Special Move Castling Short
                 if (to.Column == from.Column + 2)
                 {
-                    Position fromRook = new Position(from.Line, from.Column + 3);
-                    Position toRook = new Position(to.Line, to.Column - 1);
-                    Piece? rook = board.RemovePiece(fromRook);
-                    rook?.incMovementQt();
+                    Position fromRook = new(from.Line, from.Column + 3);
+                    Position toRook = new(to.Line, to.Column - 1);
+                    Piece? rook = Board.RemovePiece(fromRook);
+                    rook?.IncMovementQt();
                     if (rook != null)
-                        board.PlacePiece(rook, toRook);
+                        Board.PlacePiece(rook, toRook);
                 }
                 // Special Move Castling Long
                 else if (to.Column == from.Column - 2)
                 {
-                    Position fromRook = new Position(from.Line, from.Column - 4);
-                    Position toRook = new Position(to.Line, to.Column + 1);
-                    Piece? rook = board.RemovePiece(fromRook);
-                    rook?.incMovementQt();
+                    Position fromRook = new(from.Line, from.Column - 4);
+                    Position toRook = new(to.Line, to.Column + 1);
+                    Piece? rook = Board.RemovePiece(fromRook);
+                    rook?.IncMovementQt();
                     if (rook != null)
-                        board.PlacePiece(rook, toRook);
+                        Board.PlacePiece(rook, toRook);
                 }
             }
 
@@ -139,70 +138,70 @@ namespace Game
                     {
                         posWeakPawn = new Position(to.Line - 1, to.Column);
                     }
-                    capturedPiece = board.RemovePiece(posWeakPawn);
+                    capturedPiece = Board.RemovePiece(posWeakPawn);
                     if (capturedPiece != null)
-                        captured.Add(capturedPiece);
+                        Captured.Add(capturedPiece);
                 }
             }
 
             return capturedPiece;
         }
 
-        public void handleMove(Position from, Position to)
+        public void HandleMove(Position from, Position to)
         {
-            Piece? capturedPiece = makeMove(from, to);
+            Piece? capturedPiece = MakeMove(from, to);
 
-            if (isInCheck(curPlayer))
+            if (IsInCheck(CurPlayer))
             {
-                undoMovement(from, to, capturedPiece);
+                UndoMovement(from, to, capturedPiece);
                 throw new BoardException("You cannot place yourself in check.");
             }
 
-            Piece? piece = board.Piece(to);
+            Piece? piece = Board.Piece(to);
 
-            if (isInCheck(enemyColor(curPlayer)))
+            if (IsInCheck(EnemyColor(CurPlayer)))
             {
-                check = true;
+                Check = true;
             }
             else
             {
-                check = false;
+                Check = false;
             }
 
-            if (testCheckMate(enemyColor(curPlayer)))
+            if (TestCheckMate(EnemyColor(CurPlayer)))
             {
-                finished = true;
+                Finished = true;
             }
             else
             {
-                round++;
-                changePlayer();
+                Round++;
+                ChangePlayer();
             }
 
             // Special Move En Passant
             if (piece is Pawn && (to.Line == from.Line - 2) || (to.Line == from.Line + 2))
             {
-                weakEnPassant = piece;
+                WeakEnPassant = piece;
             }
             else
             {
-                weakEnPassant = null;
+                WeakEnPassant = null;
             }
         }
 
-        public void undoMovement(Position from, Position to, Piece? capturedPiece)
+        public void UndoMovement(Position from, Position to, Piece? capturedPiece)
         {
-            Piece? piece = board.RemovePiece(to);
+            Piece? piece = Board.RemovePiece(to);
             if (piece != null)
             {
-                piece.decMovementQt();
+                piece.DecMovementQt();
             }
             if (capturedPiece != null)
             {
-                board.PlacePiece(capturedPiece, to);
-                captured.Remove(capturedPiece);
+                Board.PlacePiece(capturedPiece, to);
+                Captured.Remove(capturedPiece);
             }
-            board.PlacePiece(piece, from);
+            Board.PlacePiece(piece, from);
 
             // Undo Special Move Castling
             if (piece is King)
@@ -210,28 +209,28 @@ namespace Game
                 // Undo Special Move Castling Short
                 if (to.Column == from.Column + 2)
                 {
-                    Position fromRook = new Position(from.Line, from.Column + 3);
-                    Position toRook = new Position(to.Line, to.Column - 1);
-                    Piece? rook = board.RemovePiece(toRook);
-                    rook?.decMovementQt();
-                    board.PlacePiece(rook, fromRook);
+                    Position fromRook = new(from.Line, from.Column + 3);
+                    Position toRook = new(to.Line, to.Column - 1);
+                    Piece? rook = Board.RemovePiece(toRook);
+                    rook?.DecMovementQt();
+                    Board.PlacePiece(rook, fromRook);
                 }
                 // Undo Special Move Castling Long
                 else if (to.Column == from.Column - 2)
                 {
-                    Position fromRook = new Position(from.Line, from.Column - 4);
-                    Position toRook = new Position(to.Line, to.Column + 1);
-                    Piece? rook = board.RemovePiece(toRook);
-                    rook?.decMovementQt();
-                    board.PlacePiece(rook, fromRook);
+                    Position fromRook = new(from.Line, from.Column - 4);
+                    Position toRook = new(to.Line, to.Column + 1);
+                    Piece? rook = Board.RemovePiece(toRook);
+                    rook?.DecMovementQt();
+                    Board.PlacePiece(rook, fromRook);
                 }
             }
 
             if (piece is Pawn)
             {
-                if (from.Column != to.Column && capturedPiece == weakEnPassant)
+                if (from.Column != to.Column && capturedPiece == WeakEnPassant)
                 {
-                    Piece? pawn = board.RemovePiece(to);
+                    Piece? pawn = Board.RemovePiece(to);
                     Position posWeakPawn;
                     if (piece.Color == Color.White)
                     {
@@ -242,47 +241,47 @@ namespace Game
                         posWeakPawn = new Position(4, to.Column);
                     }
                     if (pawn != null)
-                        board.PlacePiece(pawn, posWeakPawn);
+                        Board.PlacePiece(pawn, posWeakPawn);
                 }
             }
         }
 
-        public void validateFromPosition(Position from)
+        public void ValidateFromPosition(Position from)
         {
-            if (board.Piece(from) == null)
+            if (Board.Piece(from) == null)
             {
                 throw new BoardException("There is no piece at this position.");
             }
-            if (curPlayer != board.Piece(from)?.Color)
+            if (CurPlayer != Board.Piece(from)?.Color)
             {
                 throw new BoardException("You cannot move a piece from another player.");
             }
-            Piece? pieceFrom = board.Piece(from);
+            Piece? pieceFrom = Board.Piece(from);
             if (pieceFrom != null)
             {
-                if (!pieceFrom.anyPossibleMove())
+                if (!pieceFrom.AnyPossibleMove())
                 {
                     throw new BoardException("There is no move avaiable for this piece.");
                 }
             }
         }
 
-        public void validateToPosition(Position from, Position to)
+        public void ValidateToPosition(Position from, Position to)
         {
-            Piece? pieceFrom = board.Piece(from);
+            Piece? pieceFrom = Board.Piece(from);
             if (pieceFrom != null)
             {
-                if (!pieceFrom.possibleMovement(to))
+                if (!pieceFrom.PossibleMovement(to))
                 {
                     throw new BoardException("Cannot make this move.");
                 }
             }
         }
 
-        public HashSet<Piece> capturedPieces(Color color)
+        public HashSet<Piece> CapturedPieces(Color color)
         {
-            HashSet<Piece> assistant = new HashSet<Piece>();
-            foreach (Piece piece in captured)
+            HashSet<Piece> assistant = new();
+            foreach (Piece piece in Captured)
             {
                 if (piece.Color == color)
                 {
@@ -292,30 +291,30 @@ namespace Game
             return assistant;
         }
 
-        public HashSet<Piece> piecesInGame(Color color)
+        public HashSet<Piece> PiecesInGame(Color color)
         {
-            HashSet<Piece> assistant = new HashSet<Piece>();
-            foreach (Piece piece in pieces)
+            HashSet<Piece> assistant = new();
+            foreach (Piece piece in Pieces)
             {
                 if (piece.Color == color)
                 {
                     assistant.Add(piece);
                 }
             }
-            assistant.ExceptWith(capturedPieces(color));
+            assistant.ExceptWith(CapturedPieces(color));
             return assistant;
         }
 
         public void PlaceNewPiece(char column, int line, Piece piece)
         {
-            board.PlacePiece(piece, new ChessPositioning(column, line).toPosition());
-            pieces.Add(piece);
+            Board.PlacePiece(piece, new ChessPositioning(column, line).ToPosition());
+            Pieces.Add(piece);
         }
 
-        public bool isInCheck(Color color)
+        public bool IsInCheck(Color color)
         {
-            Piece? k = king(color);
-            foreach (Piece piece in piecesInGame(enemyColor(color)))
+            Piece? k = King(color);
+            foreach (Piece piece in PiecesInGame(EnemyColor(color)))
             {
                 bool[,] mat = piece.PossibleMoves();
                 if (k?.Position != null)
@@ -329,25 +328,25 @@ namespace Game
             return false;
         }
 
-        public bool testCheckMate(Color color)
+        public bool TestCheckMate(Color color)
         {
-            if (!isInCheck(color)) { return false; }
-            foreach (Piece piece in piecesInGame(color))
+            if (!IsInCheck(color)) { return false; }
+            foreach (Piece piece in PiecesInGame(color))
             {
                 bool[,] mat = piece.PossibleMoves();
-                for (int i = 0; i < board.Lines; i++)
+                for (int i = 0; i < Board.Lines; i++)
                 {
-                    for (int j = 0; j < board.Columns; j++)
+                    for (int j = 0; j < Board.Columns; j++)
                     {
                         if (mat[i, j])
                         {
                             Position? from = piece.Position;
-                            Position to = new Position(i, j);
+                            Position to = new(i, j);
                             if (from != null && to != null)
                             {
-                                Piece? capturedPiece = makeMove(from, to);
-                                bool testCheck = isInCheck(color);
-                                undoMovement(from, to, capturedPiece);
+                                Piece? capturedPiece = MakeMove(from, to);
+                                bool testCheck = IsInCheck(color);
+                                UndoMovement(from, to, capturedPiece);
                                 if (!testCheck)
                                 {
                                     return false;
@@ -360,15 +359,15 @@ namespace Game
             return true;
         }
 
-        private void changePlayer()
+        private void ChangePlayer()
         {
-            if (curPlayer == Color.White)
+            if (CurPlayer == Color.White)
             {
-                curPlayer = Color.Black;
+                CurPlayer = Color.Black;
             }
             else
             {
-                curPlayer = Color.White;
+                CurPlayer = Color.White;
             }
         }
 
@@ -376,36 +375,36 @@ namespace Game
         private void PlacePieces()
         {
             //White
-            PlaceNewPiece('a', 1, new Rook(Color.White, board));
-            PlaceNewPiece('b', 1, new Knight(Color.White, board));
-            PlaceNewPiece('c', 1, new Bishop(Color.White, board));
-            PlaceNewPiece('d', 1, new Queen(Color.White, board));
-            PlaceNewPiece('e', 1, new King(Color.White, board, this));
-            PlaceNewPiece('f', 1, new Bishop(Color.White, board));
-            PlaceNewPiece('g', 1, new Knight(Color.White, board));
-            PlaceNewPiece('h', 1, new Rook(Color.White, board));
+            PlaceNewPiece('a', 1, new Rook(Color.White, Board));
+            PlaceNewPiece('b', 1, new Knight(Color.White, Board));
+            PlaceNewPiece('c', 1, new Bishop(Color.White, Board));
+            PlaceNewPiece('d', 1, new Queen(Color.White, Board));
+            PlaceNewPiece('e', 1, new King(Color.White, Board, this));
+            PlaceNewPiece('f', 1, new Bishop(Color.White, Board));
+            PlaceNewPiece('g', 1, new Knight(Color.White, Board));
+            PlaceNewPiece('h', 1, new Rook(Color.White, Board));
             for (char i = 'a'; i <= 'h'; i++)
             {
-                PlaceNewPiece(i, 2, new Pawn(Color.White, board, this));
+                PlaceNewPiece(i, 2, new Pawn(Color.White, Board, this));
             }
 
 
             //Black
-            PlaceNewPiece('a', 8, new Rook(Color.Black, board));
-            PlaceNewPiece('b', 8, new Knight(Color.Black, board));
-            PlaceNewPiece('c', 8, new Bishop(Color.Black, board));
-            PlaceNewPiece('d', 8, new Queen(Color.Black, board));
-            PlaceNewPiece('e', 8, new King(Color.Black, board, this));
-            PlaceNewPiece('f', 8, new Bishop(Color.Black, board));
-            PlaceNewPiece('g', 8, new Knight(Color.Black, board));
-            PlaceNewPiece('h', 8, new Rook(Color.Black, board));
+            PlaceNewPiece('a', 8, new Rook(Color.Black, Board));
+            PlaceNewPiece('b', 8, new Knight(Color.Black, Board));
+            PlaceNewPiece('c', 8, new Bishop(Color.Black, Board));
+            PlaceNewPiece('d', 8, new Queen(Color.Black, Board));
+            PlaceNewPiece('e', 8, new King(Color.Black, Board, this));
+            PlaceNewPiece('f', 8, new Bishop(Color.Black, Board));
+            PlaceNewPiece('g', 8, new Knight(Color.Black, Board));
+            PlaceNewPiece('h', 8, new Rook(Color.Black, Board));
             for (char i = 'a'; i <= 'h'; i++)
             {
-                PlaceNewPiece(i, 7, new Pawn(Color.Black, board, this));
+                PlaceNewPiece(i, 7, new Pawn(Color.Black, Board, this));
             }
         }
 
-        private Color enemyColor(Color color)
+        private static Color EnemyColor(Color color)
         {
             if (color == Color.White)
             {
@@ -417,9 +416,9 @@ namespace Game
             }
         }
 
-        private Piece? king(Color color)
+        private Piece? King(Color color)
         {
-            foreach (Piece piece in piecesInGame(color))
+            foreach (Piece piece in PiecesInGame(color))
             {
                 if (piece is King)
                 {
