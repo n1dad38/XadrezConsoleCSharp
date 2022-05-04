@@ -44,7 +44,7 @@ namespace Game
                         mat[pos.Line, pos.Column] = true;
                     }
                     pos.DefineValues(Position.Line - 2, Position.Column);
-                    if (Board.ValidPosition(pos) && CanMove(pos) && QtMovements == 0)
+                    if (Board.ValidPosition(pos) && CanMove(pos) && QtMovements == 0 && Board.Piece(Position.Line - 1, Position.Column) == null)
                     {
                         mat[pos.Line, pos.Column] = true;
                     }
@@ -82,7 +82,7 @@ namespace Game
                         mat[pos.Line, pos.Column] = true;
                     }
                     pos.DefineValues(Position.Line + 2, Position.Column);
-                    if (Board.ValidPosition(pos) && CanMove(pos) && QtMovements == 0)
+                    if (Board.ValidPosition(pos) && CanMove(pos) && QtMovements == 0 && Board.Piece(Position.Line + 1, Position.Column) == null)
                     {
                         mat[pos.Line, pos.Column] = true;
                     }
